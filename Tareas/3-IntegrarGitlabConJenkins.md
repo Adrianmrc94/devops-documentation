@@ -2,7 +2,47 @@
 
 ## 🎯 Objetivo
 
-Configurar integración **GitLab webhook → Jenkins** para CI/CD automático.
+Configurar integración **GitLab webhook → Jenkins** para CI/CD automático, aprovechando la red Docker `devops-net` para comunicación entre contenedores.
+
+## 📋 Prerrequisitos
+
+✅ **Ambos contenedores deben estar en la red `devops-net`:**
+
+```bash
+# Verificar que ambos contenedores están en la red
+docker network inspect devops-net | grep -E "jenkins|gitlab"
+
+# Resultado esperado:
+# "jenkins": { ... }
+# "gitlab": { ... }
+```
+
+✅ **Verificar conectividad:**
+
+```bash
+# Desde Jenkins → GitLab
+docker exec jenkins ping -c 2 gitlab
+
+# Desde GitLab → Jenkins
+docker exec gitlab ping -c 2 jenkins
+```
+
+Si ambos `ping` funcionan, la red está correctamente configurada. ✅
+
+---
+
+## 🔍 Entendiendo URLs de GitLab según contexto
+
+| Desde dónde | URL correcta | Explicación |
+|-------------|-------------|-------------|
+| **Tu máquina (navegador)** | `http://localhost:8929` | Puerto mapeado en host |
+| **Tu máquina (git SSH)** | `ssh://git@localhost:2222` | Puerto SSH mapeado en host |
+| **Jenkins (checkout repo)** | `ssh://git@gitlab:22` | Comunicación interna via devops-net |
+| **Jenkins (API calls)** | `http://gitlab:80` | HTTP interno (sin puerto mapeado) |
+
+⚠️ **CRÍTICO:** En pipelines de Jenkins, **SIEMPRE usar `gitlab:22`**, NO `localhost:2222`.
+
+---
 
 ## 🚀 Pasos de integración
 

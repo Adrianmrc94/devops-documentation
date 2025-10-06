@@ -31,13 +31,28 @@ docker ps
 
 ### ✅ Red Docker
 
+⚠️ **Prerrequisito:** La red `devops-net` debe existir (creada en **Tarea 1: Levantar Jenkins**)
+
 ```bash
-# Verificar red devops-net
-docker network ls
+# Verificar que la red existe
+docker network ls | grep devops-net
 
 # Debe aparecer:
-- devops-net (bridge)
+# devops-net   bridge   local
+
+# Si NO existe, crearla:
+# docker network create devops-net
+
+# Verificar que Jenkins y GitLab están conectados
+docker network inspect devops-net | grep -E "jenkins|gitlab"
 ```
+
+**¿Por qué es necesaria esta red?**
+- 🔗 Los contenedores Docker **dentro de pipelines** necesitan comunicarse con GitLab
+- 🎯 Permite usar `gitlab:22` en lugar de `localhost:2222` (que no funciona entre contenedores)
+- 📦 Aísla el entorno DevOps de otras redes Docker
+
+Ver: **Tarea 1 (Jenkins)** y **Tarea 2 (GitLab)** para detalles sobre la creación de esta red.
 
 ## 🚀 Implementación Paso a Paso
 
@@ -158,31 +173,80 @@ git commit -m "Add Maven CI/CD pipeline with Docker optimization"
 git push origin main
 ```
 
-### Paso 4: Verificar comunicación Jenkins-GitLab
+### Paso 4: Configurar SSH entre Jenkins y GitLab
 
-#### A. Verificar claves SSH existentes
+⚠️ **Nota:** Si ya configuraste SSH en la **Tarea 5 (Pipeline Angular)**, puedes saltar directamente al **Paso 5**.
+
+#### A. Verificar si Jenkins tiene claves SSH
 
 ```bash
 # Verificar que Jenkins tiene claves SSH
 docker exec jenkins ls -la /var/jenkins_home/.ssh/
 
-# Debe mostrar:
-# - id_ed25519 (clave privada)
-# - id_ed25519.pub (clave pública)
-# - known_hosts
+# Si el directorio NO existe o está vacío, continuar con paso B
 ```
 
-#### B. Verificar clave pública en GitLab
+---
+
+#### B. Generar claves SSH en Jenkins (si no existen)
 
 ```bash
-# Mostrar clave pública de Jenkins
+# Crear directorio .ssh
+docker exec jenkins mkdir -p /var/jenkins_home/.ssh
+
+# Generar clave SSH (sin contraseña para automatización)
+docker exec jenkins ssh-keygen -t ed25519 -C "jenkins@devops" -f /var/jenkins_home/.ssh/id_ed25519 -N ""
+
+# Verificar creación
+docker exec jenkins ls -la /var/jenkins_home/.ssh/
+```
+
+---
+
+#### C. Agregar clave pública a GitLab
+
+```bash
+# Mostrar clave pública para copiar
 docker exec jenkins cat /var/jenkins_home/.ssh/id_ed25519.pub
 ```
 
-1. Copiar la salida
-2. Ir a GitLab: `http://localhost:8929`
-3. **Perfil** → **SSH Keys**
-4. Pegar clave pública y guardar
+**Agregar a GitLab UI:**
+
+1. Abrir GitLab: http://localhost:8929
+2. Login con tu usuario
+3. Click **avatar** → **Edit profile** → **SSH Keys**
+4. Pegar clave pública
+5. **Title:** `jenkins-key`
+6. Click **Add key**
+
+---
+
+#### D. Configurar known_hosts
+
+```bash
+# Obtener fingerprint de GitLab
+docker exec jenkins sh -c "ssh-keyscan -p 22 gitlab >> /var/jenkins_home/.ssh/known_hosts"
+
+# Ajustar permisos
+docker exec jenkins chmod 700 /var/jenkins_home/.ssh
+docker exec jenkins chmod 600 /var/jenkins_home/.ssh/id_ed25519
+docker exec jenkins chmod 644 /var/jenkins_home/.ssh/id_ed25519.pub
+docker exec jenkins chmod 644 /var/jenkins_home/.ssh/known_hosts
+```
+
+---
+
+#### E. Probar conexión SSH
+
+```bash
+# Probar conexión
+docker exec jenkins ssh -T git@gitlab -p 22
+
+# Resultado esperado:
+# Welcome to GitLab, @adrianmrc94!
+```
+
+✅ Si ves el mensaje de bienvenida, la configuración SSH está correcta.
 
 #### C. Verificar acceso Docker en Jenkins
 
