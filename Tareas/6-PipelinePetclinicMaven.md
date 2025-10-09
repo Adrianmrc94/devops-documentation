@@ -23,6 +23,20 @@ docker ps
 - gitlab:8929 (puerto 80 interno, 8929 externo)
 ```
 
+### ✅ Plugins de Jenkins instalados
+
+⚠️ **Requisito CRÍTICO:** El plugin **Docker Pipeline** debe estar instalado (configurado en **Tarea 1, Paso 7**)
+
+**Verificar:**
+1. Jenkins → **Manage Jenkins** → **Plugins** → **Installed plugins**
+2. Buscar: `Docker Pipeline`
+3. Si NO aparece, instalarlo:
+   - **Available plugins** → Buscar `Docker Pipeline` → **Install**
+
+**¿Por qué es necesario?**
+- Este pipeline usa `agent { docker { image 'maven:3.9.9-eclipse-temurin-17' ... } }`
+- Sin el plugin, Jenkins dará error: `Invalid agent type "docker"`
+
 ### ✅ Repositorios en GitLab
 
 - `petclinic-rest` (Maven) subido a GitLab local

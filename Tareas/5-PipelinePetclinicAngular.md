@@ -22,6 +22,20 @@ docker ps
 - gitlab:8929 (puerto 80 interno, 8929 externo)
 ```
 
+### ✅ Plugins de Jenkins instalados
+
+⚠️ **Requisito CRÍTICO:** El plugin **Docker Pipeline** debe estar instalado (configurado en **Tarea 1, Paso 7**)
+
+**Verificar:**
+1. Jenkins → **Manage Jenkins** → **Plugins** → **Installed plugins**
+2. Buscar: `Docker Pipeline`
+3. Si NO aparece, instalarlo:
+   - **Available plugins** → Buscar `Docker Pipeline` → **Install**
+
+**¿Por qué es necesario?**
+- Este pipeline usa `agent { docker { image 'node:18-bullseye' ... } }`
+- Sin el plugin, Jenkins dará error: `Invalid agent type "docker"`
+
 ### ✅ Repositorios en GitLab
 
 - `petclinic-angular` subido a GitLab local
@@ -87,14 +101,14 @@ pipeline {
             image 'node:18-bullseye'
             args '-v /var/jenkins_home/workspace/petclinic-angular-ci:/app:rw -w /app --user root --network devops-net'
             reuseNode true
-            <!-- 🔧 Desglose técnico:
+            /* 🔧 Desglose técnico:
                 -> image 'node:18-bullseye' → Node.js 18 + Debian estable
                 -> -v /var/jenkins_home/.../app:rw → Montar código dentro del contenedor
                 -> -w /app → Directorio de trabajo donde ejecutar comandos
                 -> --user root → Permisos para instalar Chrome y dependencias
                 -> --network devops-net → Comunicación con GitLab
                 -> reuseNode true → Reutilizar el mismo contenedor entre stages 
-            -->
+            */
         }
     }
 
@@ -395,6 +409,67 @@ module.exports = function (config) {
   });
 };
 ```
+
+### ❌ Error: "Running as root without --no-sandbox is not supported"
+
+**Problema:** Chrome no puede ejecutarse como root sin la flag `--no-sandbox`
+
+**Síntomas:**
+```
+ERROR [launcher]: Cannot start ChromeHeadless
+Running as root without --no-sandbox is not supported. See https://crbug.com/638180.
+```
+
+**Solución:** Configurar Karma para usar `--no-sandbox` en `karma.conf.js`:
+
+```javascript
+// karma.conf.js
+module.exports = function (config) {
+  config.set({
+    basePath: '',
+    frameworks: ['jasmine', '@angular-devkit/build-angular'],
+    plugins: [
+      require('karma-jasmine'),
+      require('karma-chrome-launcher'),
+      require('karma-jasmine-html-reporter'),
+      require('@angular-devkit/build-angular/plugins/karma')
+    ],
+    reporters: ['progress', 'kjhtml'],
+    browsers: ['ChromeHeadlessCI'],  // ← Usar launcher personalizado
+    customLaunchers: {
+      ChromeHeadlessCI: {
+        base: 'ChromeHeadless',
+        flags: [
+          '--no-sandbox',              // ← CRÍTICO para Docker
+          '--disable-gpu',
+          '--disable-dev-shm-usage',
+          '--disable-software-rasterizer'
+        ]
+      }
+    },
+    restartOnFileChange: true
+  });
+};
+```
+
+**Actualizar Jenkinsfile para usar el launcher correcto:**
+
+```groovy
+// En stage('Test'), cambiar:
+sh 'npm run test -- --no-watch --no-progress --browsers=ChromeHeadless'
+
+// Por:
+sh 'npm run test -- --no-watch --no-progress --browsers=ChromeHeadlessCI'
+```
+
+**Commit y push:**
+```bash
+git add karma.conf.js Jenkinsfile
+git commit -m "Fix: Add --no-sandbox flag for Chrome in Docker CI"
+git push origin main
+```
+
+---
 
 ### ❌ Error: Chrome connection failed / Display issues
 

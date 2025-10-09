@@ -46,11 +46,25 @@ docker ps
 
 #### **Paso 1.2: Clonar repositorio localmente**
 
+⚠️ **IMPORTANTE:** Usa `localhost:2222` desde tu máquina local, NO `gitlab:22` (ese solo funciona dentro de contenedores Docker).
+
 ```bash
+mkdir -p ~/jenkins-pipelines
 cd ~/jenkins-pipelines
-git clone ssh://git@gitlab:22/adrianmrc94/jenkinspipelines.git
+
+# Clonar usando localhost:2222 (puerto SSH mapeado al host)
+git clone ssh://git@localhost:2222/adrianmrc94/jenkinspipelines.git
+
 cd jenkinspipelines
 ```
+
+**Contexto de URLs:**
+
+| Contexto | URL SSH GitLab | Cuándo usar |
+|----------|---------------|-------------|
+| **Tu máquina local** (WSL/Linux) | `ssh://git@localhost:2222/...` | Al clonar, push, pull desde tu terminal |
+| **Contenedores Docker** (Jenkins) | `ssh://git@gitlab:22/...` | En Jenkinsfiles, dentro de contenedores |
+| **GitLab Web UI** | `http://localhost:8929` | Navegador para crear repos |
 
 ### **Fase 2: Preparación de la Estructura**
 
@@ -200,10 +214,18 @@ EOF
 #### **Paso 2.3: Subir estructura inicial**
 
 ```bash
+# Dentro del directorio jenkinspipelines
 git add .
 git commit -m "✨ Initial setup: Jenkins pipelines repository with Maven/Angular support"
+
+# Push a GitLab (usa localhost:2222 desde tu máquina local)
 git push origin main
 ```
+
+**Verificar en GitLab UI:**
+1. Abrir: `http://localhost:8929/adrianmrc94/jenkinspipelines`
+2. Verificar que aparecen los archivos: `vars/commonSteps.groovy`, directorios `pipelines/`, etc.
+3. ✅ Si ves todos los archivos, la estructura está correcta
 
 ### **Fase 3: Configuración de Jenkins**
 
@@ -351,9 +373,22 @@ pipeline {
 
 **Subir cambios:**
 ```bash
+# Dentro del directorio spring-petclinic-rest
 git add Jenkinsfile
 git commit -m "🔄 Migrate to centralized pipeline using @Library('jenkinspipelines')"
+
+# Push a GitLab (usa remote configurado, ya debería estar con localhost:2222)
 git push origin main
+```
+
+**Verificar remote correcto:**
+```bash
+# Si necesitas verificar/cambiar el remote a localhost:2222
+git remote -v
+# Debe mostrar: ssh://git@localhost:2222/adrianmrc94/petclinic-rest.git
+
+# Si muestra gitlab:22, cambiar a localhost:2222
+# git remote set-url origin ssh://git@localhost:2222/adrianmrc94/petclinic-rest.git
 ```
 
 #### **Paso 4.2: Migrar Pipeline Angular (Frontend)**
@@ -500,12 +535,50 @@ pipeline {
 
 **Subir cambios:**
 ```bash
+# Dentro del directorio spring-petclinic-angular
 git add Jenkinsfile
 git commit -m "🔄 Migrate to centralized pipeline using @Library('jenkinspipelines')"
+
+# Push a GitLab
 git push origin main
 ```
 
+**Verificar remote correcto:**
+```bash
+# Verificar que usa localhost:2222
+git remote -v
+# Debe mostrar: ssh://git@localhost:2222/adrianmrc94/petclinic-angular.git
+```
+
 ### **Fase 5: Resolución de Problemas**
+
+#### **Problema común: "Could not resolve hostname gitlab"**
+
+**Síntoma:**
+```
+ssh: Could not resolve hostname gitlab: Name or service not known
+fatal: Could not read from remote repository.
+```
+
+**Causa:** Estás ejecutando `git clone` desde tu máquina local usando `gitlab:22`, pero ese hostname solo existe dentro de la red Docker `devops-net`.
+
+**Solución:**
+```bash
+# ✅ CORRECTO desde tu máquina local:
+git clone ssh://git@localhost:2222/adrianmrc94/jenkinspipelines.git
+
+# ❌ INCORRECTO desde tu máquina local:
+git clone ssh://git@gitlab:22/adrianmrc94/jenkinspipelines.git
+```
+
+**Verificar acceso SSH:**
+```bash
+# Desde tu máquina local
+ssh -T git@localhost -p 2222
+# Debe mostrar: Welcome to GitLab, @adrianmrc94!
+```
+
+---
 
 #### **Problema común: "Library is empty after retrieval"**
 

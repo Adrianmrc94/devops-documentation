@@ -42,7 +42,7 @@ docker volume create jenkins_data
 
 ---
 
-### 3. Levantar contenedor Jenkins en la red `devops-net`
+### 3. Levantar contenedor Jenkins en la red `devops-net` con acceso a Docker
 
 ```bash
 docker run -d \
@@ -51,17 +51,53 @@ docker run -d \
   -p 8080:8080 \
   -p 50000:50000 \
   -v jenkins_data:/var/jenkins_home \
+  -v /var/run/docker.sock:/var/run/docker.sock \
   jenkins/jenkins:lts
 ```
 
 **Explicación de parámetros:**
 - `-d` → Ejecuta en segundo plano (daemon mode)
 - `--name jenkins` → Nombre del contenedor
-- `--network devops-net` → **NUEVO:** Conecta a red Docker personalizada
+- `--network devops-net` → Conecta a red Docker personalizada
 - `-p 8080:8080` → Mapea puerto web de Jenkins
 - `-p 50000:50000` → Puerto para comunicación master-nodos
 - `-v jenkins_data:/var/jenkins_home` → Volumen persistente para datos
+- `-v /var/run/docker.sock:/var/run/docker.sock` → **CRÍTICO:** Acceso al Docker del host
 - `jenkins/jenkins:lts` → Imagen oficial LTS (Long-Term Support)
+
+**¿Por qué montar el socket de Docker?**
+- Permite que Jenkins ejecute contenedores Docker (necesario para pipelines)
+- Los pipelines de las Tareas 5 y 6 usan `agent { docker { ... } }`
+- Sin esto, Jenkins no puede usar Docker y los pipelines fallan
+
+---
+
+### 3.1. Instalar Docker CLI en Jenkins
+
+```bash
+# Instalar Docker CLI dentro del contenedor Jenkins
+docker exec -u root jenkins sh -c "
+  apt-get update && \
+  apt-get install -y apt-transport-https ca-certificates curl gnupg && \
+  curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+  echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian bullseye stable' > /etc/apt/sources.list.d/docker.list && \
+  apt-get update && \
+  apt-get install -y docker-ce-cli
+"
+
+# Dar permisos al usuario jenkins para usar Docker
+docker exec -u root jenkins chmod 666 /var/run/docker.sock
+
+# Verificar instalación
+docker exec jenkins docker --version
+```
+
+**Resultado esperado:**
+```
+Docker version 24.x.x, build...
+```
+
+✅ Si ves la versión de Docker, Jenkins está listo para ejecutar pipelines con Docker.
 
 ---
 
@@ -93,6 +129,30 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 - Introducir contraseña inicial
 - Instalar plugins recomendados
 - Crear usuario administrador
+
+---
+
+### 7. Instalar plugins adicionales necesarios
+
+Una vez completada la configuración inicial, instalar plugins adicionales para pipelines:
+
+1. **Jenkins** → **Manage Jenkins** → **Plugins**
+2. **Available plugins** (pestaña)
+3. Buscar e instalar:
+   - ✅ **Docker Pipeline** (necesario para `agent { docker { ... } }` en Jenkinsfiles)
+   - ✅ **Docker** (plugin base de Docker)
+   - ✅ **Pipeline: Stage View** (opcional, mejora visualización de pipelines)
+4. **Install without restart**
+
+**¿Por qué son necesarios?**
+- **Docker Pipeline:** Permite ejecutar stages de pipelines dentro de contenedores Docker
+- **Docker:** Proporciona integración base con Docker
+- Serán necesarios en las **Tareas 5 y 6** (Pipelines Angular y Maven)
+
+**Verificar instalación:**
+1. **Jenkins** → **Manage Jenkins** → **Plugins**
+2. **Installed plugins** (pestaña)
+3. Buscar `Docker Pipeline` → Debe aparecer en la lista ✅
 
 ---
 
