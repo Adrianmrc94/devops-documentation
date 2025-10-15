@@ -24,23 +24,27 @@ docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 ## ☸️ **Paso 2: Verificar Kubernetes (1 minuto)**
 
 ```bash
-# Estado de Minikube
-minikube status
+# Estado del contenedor Minikube
+docker ps --filter "name=minikube" --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 
-# Ver nodos del cluster
-kubectl get nodes
+# Ver nodos del cluster (desde Jenkins)
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get nodes
 
-# Ver todos los pods del sistema
-kubectl get pods -A
+# Ver todos los pods en namespace jenkins
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get pods -n jenkins
 
-# Ver namespace jenkins
-kubectl get namespace jenkins
+# Ver todos los namespaces
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get namespaces
+
+# Ver recursos en namespace jenkins
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get all -n jenkins
 ```
 
 **Deberías ver:**
-- ✅ Minikube: Running
-- ✅ Node: Ready
+- ✅ Contenedor Minikube: Up (19 minutes)
+- ✅ Node minikube: Ready, control-plane
 - ✅ Namespace jenkins: Active
+- ✅ Pod hello-from-registry: Completed
 
 ---
 
@@ -99,17 +103,20 @@ docker network inspect minikube --format='{{range .Containers}}{{.Name}} {{end}}
 ### **Opción A: Desde línea de comandos**
 
 ```bash
-# Crear pod de prueba
-kubectl run nginx-demo --image=nginx:alpine --port=80 -n jenkins
+# Crear pod de prueba desde Jenkins
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig run nginx-demo --image=nginx:alpine --port=80 -n jenkins
 
 # Ver el pod
-kubectl get pods -n jenkins
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get pods -n jenkins
+
+# Esperar a que esté listo
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig wait --for=condition=Ready pod/nginx-demo -n jenkins --timeout=60s
 
 # Ver logs
-kubectl logs nginx-demo -n jenkins
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig logs nginx-demo -n jenkins
 
 # Eliminar (limpieza)
-kubectl delete pod nginx-demo -n jenkins
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig delete pod nginx-demo -n jenkins
 ```
 
 ### **Opción B: Ejecutar Pipeline en Jenkins (más impresionante)**
@@ -120,7 +127,7 @@ kubectl delete pod nginx-demo -n jenkins
 4. Verificar pod creado:
 
 ```bash
-kubectl get pods -n jenkins
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get pods -n jenkins
 ```
 
 ---
@@ -131,23 +138,23 @@ kubectl get pods -n jenkins
 
 ```bash
 # Info del cluster
-kubectl cluster-info
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig cluster-info
 
 # Recursos del nodo
-kubectl describe node minikube
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig describe node minikube
 
 # Eventos recientes
-kubectl get events -n jenkins --sort-by='.lastTimestamp'
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get events -n jenkins --sort-by='.lastTimestamp'
 ```
 
 ### **Ver configuración de Minikube**
 
 ```bash
-# Configuración de Minikube
-minikube config view
+# Estado del contenedor
+docker inspect minikube --format='{{.Name}}: {{.State.Status}}'
 
-# IP de Minikube
-minikube ip
+# IPs de Minikube (múltiples redes)
+docker inspect minikube --format='{{range .NetworkSettings.Networks}}{{.IPAddress}} {{end}}'
 
 # Acceder a Minikube por SSH
 minikube ssh
@@ -173,13 +180,13 @@ docker ps --format "table {{.Names}}\t{{.Status}}\t{{.Ports}}"
 echo ""
 
 echo "===== 2. ESTADO DE KUBERNETES ====="
-minikube status
-kubectl get nodes
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get nodes
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig cluster-info
 echo ""
 
 echo "===== 3. NAMESPACES Y RECURSOS ====="
-kubectl get namespaces
-kubectl get all -n jenkins
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get namespaces
+docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get all -n jenkins
 echo ""
 
 echo "===== 4. INTEGRACIÓN JENKINS → KUBERNETES ====="

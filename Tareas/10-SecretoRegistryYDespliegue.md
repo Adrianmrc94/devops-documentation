@@ -2,17 +2,17 @@
 
 ## 📋 Índice
 
-1. [Objetivo](#objetivo)
-2. [Prerrequisitos](#prerrequisitos)
-3. [Arquitectura](#arquitectura)
-4. [Paso 1: Verificación de Infraestructura](#paso-1-verificación-de-infraestructura)
-5. [Paso 2: Configuración de Minikube](#paso-2-configuración-de-minikube)
-6. [Paso 3: Configuración de Kubernetes](#paso-3-configuración-de-kubernetes)
-7. [Paso 4: Creación del Secreto](#paso-4-creación-del-secreto)
-8. [Paso 5: Despliegue del Pod](#paso-5-despliegue-del-pod)
-9. [Verificación Final](#verificación-final)
-10. [Troubleshooting](#troubleshooting)
-11. [Resumen](#resumen)
+1. [Objetivo](#-objetivo)
+2. [Prerrequisitos](#-prerrequisitos)
+3. [Arquitectura](#-arquitectura)
+4. [Paso 1: Verificación de Infraestructura](#-paso-1-verificación-de-infraestructura)
+5. [Paso 2: Configuración de Minikube](#-paso-2-configuración-de-minikube)
+6. [Paso 3: Configuración de Kubernetes](#-paso-3-configuración-de-kubernetes)
+7. [Paso 4: Creación del Secreto](#-paso-4-creación-del-secreto)
+8. [Paso 5: Despliegue del Pod](#-paso-5-despliegue-del-pod)
+9. [Verificación Final](#-verificación-final)
+10. [Troubleshooting](#-troubleshooting)
+11. [Resumen](#-resumen)
 
 ---
 

@@ -1,17 +1,17 @@
 # ☸️ Guía Completa: Integración de Minikube con Jenkins
 
 ## 📋 **Índice**
-1. [Introducción](#introducción)
-2. [Conceptos Clave](#conceptos-clave)
-3. [Dos Métodos de Autenticación](#dos-métodos-de-autenticación)
-4. [Prerrequisitos](#prerrequisitos)
-5. [Instalación de Minikube](#instalación-de-minikube)
-6. [Configuración de Kubernetes para Jenkins](#configuración-de-kubernetes-para-jenkins)
-7. [Instalación de kubectl en Jenkins](#instalación-de-kubectl-en-jenkins)
-8. [Verificación de la Integración](#verificación-de-la-integración)
-9. [Pipelines de Prueba](#pipelines-de-prueba)
-10. [Método Alternativo: Token Directo](#método-alternativo-token-directo)
-11. [Troubleshooting](#troubleshooting)
+1. [Introducción](#-introducción)
+2. [Conceptos Clave](#-conceptos-clave)
+3. [Dos Métodos de Autenticación](#-dos-métodos-de-autenticación)
+4. [Prerrequisitos](#-prerrequisitos)
+5. [Instalación de Minikube](#-instalación-de-minikube)
+6. [Configuración de Kubernetes para Jenkins](#-configuración-de-kubernetes-para-jenkins)
+7. [Instalación de kubectl en Jenkins](#-instalación-de-kubectl-en-jenkins)
+8. [Verificación de la Integración](#-verificación-de-la-integración)
+9. [Pipelines de Prueba](#-pipelines-de-prueba)
+10. [Método Alternativo: Token Directo](#-método-alternativo-token-directo)
+11. [Troubleshooting](#-troubleshooting)
 
 ---
 
@@ -43,6 +43,9 @@ Windows Host
 ---
 
 ## 📚 **Conceptos Clave**
+
+<details>
+<summary>📖 <b>Glosario de Kubernetes</b> (click para expandir)</summary>
 
 ### **¿Qué es Minikube?**
 - **Kubernetes local** que corre en tu máquina
@@ -78,6 +81,8 @@ Windows Host
   - Contexto actual (namespace, usuario)
 - Ubicación por defecto: `~/.kube/config`
 
+</details>
+
 ---
 
 ## 🔐 **Dos Métodos de Autenticación**
@@ -99,7 +104,8 @@ Existen **dos formas principales** de que Jenkins se autentique con Kubernetes. 
 
 ---
 
-### **🔑 Método 1: Token Directo (Kubernetes Cloud Plugin)**
+<details>
+<summary>🔑 <b>Método 1: Token Directo (Kubernetes Cloud Plugin)</b> - Click para detalles</summary>
 
 **¿Cómo funciona?**
 ```
@@ -151,9 +157,12 @@ pipeline {
 - ❌ Problemas de conectividad más complejos de resolver
 - ❌ Menos flexible para scripts personalizados
 
+</details>
+
 ---
 
-### **📄 Método 2: Kubeconfig + kubectl (USADO EN ESTA GUÍA)**
+<details>
+<summary>📄 <b>Método 2: Kubeconfig + kubectl (USADO EN ESTA GUÍA)</b> - Click para detalles</summary>
 
 **¿Cómo funciona?**
 ```
@@ -197,9 +206,12 @@ pipeline {
 - ❌ Menor aislamiento entre builds
 - ❌ Menos escalable para equipos grandes
 
+</details>
+
 ---
 
-### **🤔 ¿Por qué usamos Método 2 en esta guía?**
+<details>
+<summary>🤔 <b>¿Por qué usamos Método 2 en esta guía?</b> - Click para expandir</summary>
 
 **Razones principales:**
 
@@ -219,9 +231,12 @@ pipeline {
    - Entiendes exactamente cómo funciona kubectl
    - Puedes ver y modificar el kubeconfig
 
+</details>
+
 ---
 
-### **🔍 ¿Dónde está el "token" en Método 2?**
+<details>
+<summary>🔍 <b>¿Dónde está el "token" en Método 2?</b> - Click para expandir</summary>
 
 **Respuesta:** El kubeconfig **contiene credenciales** (certificados o token), pero de forma **indirecta**.
 
@@ -253,6 +268,8 @@ users:
 ```
 
 En ambos casos, **kubectl lee estas credenciales automáticamente** del kubeconfig y las usa para autenticarse.
+
+</details>
 
 ---
 

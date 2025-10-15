@@ -733,7 +733,8 @@ docker exec jenkins bash -c "cd /tmp && \
 
 ## 🐛 Troubleshooting: Sincronización GitLab
 
-### **Problema: GitLab solo muestra README (código no sincronizado)**
+<details>
+<summary>🔧 <b>Problema: GitLab solo muestra README (código no sincronizado)</b> - Click para solución</summary>
 
 **Síntoma:** Al abrir `http://localhost:8929/adrianmrc94/petclinic-angular` solo aparece README.md
 
@@ -811,9 +812,11 @@ docker exec jenkins bash -c "cd /var/jenkins_home/workspace/petclinic-maven-ci &
   git push origin --delete master"
 ```
 
+</details>
+
 ---
 
-## �🎉 ¡Centralización Completada Exitosamente!
+## 🎉 ¡Centralización Completada Exitosamente!
 
 **✅ Resultado final:** Pipelines Jenkins centralizadas, reutilizables y escalables con Jenkins Shared Libraries funcionando perfectamente para proyectos Maven y Angular.
 

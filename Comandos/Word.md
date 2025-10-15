@@ -72,3 +72,5 @@
 | Izquierda | `Ctrl + L` |
 | Derecha | `Ctrl + R` |
 | Centrar | `Ctrl + E` |
+
+
