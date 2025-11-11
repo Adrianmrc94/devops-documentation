@@ -76,6 +76,21 @@
 | Borrar volúmenes no usados | `docker volume prune -f` |
 | Borrar TODO (contenedores, imágenes, redes, volúmenes) | `docker system prune -a --volumes -f` |
 
+# Limpieza de petclinic-angular (mantener latest + 3 últimas)
+docker images --format "{{.Repository}}:{{.Tag}}" | grep "petclinic-angular" | grep -v "latest" | sort -Vr | tail -n +4 | xargs -r docker rmi
+
+# Limpieza de petclinic-maven (mantener latest + 3 últimas)
+docker images --format "{{.Repository}}:{{.Tag}}" | grep "petclinic-maven" | grep -v "latest" | sort -Vr | tail -n +4 | xargs -r docker rmi
+
+# Limpiar imágenes sin tag
+docker image prune -f
+
+# Ver resultado
+echo ""
+echo "✅ Limpieza completada!"
+echo ""
+echo "📊 Imágenes de petclinic restantes:"
+docker images | grep petclinic
 ---
 
 ## 🐙 Docker Compose (completo)

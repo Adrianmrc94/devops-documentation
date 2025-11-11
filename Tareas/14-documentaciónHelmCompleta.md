@@ -370,6 +370,7 @@ kubectl get pods
 
 # Acceder al servicio (Minikube)
 minikube service my-nginx --url
+(minikube service my-nginx --url -n helm-demo)
 ```
 
 #### Instalación con Nombre Personalizado

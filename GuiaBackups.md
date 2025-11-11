@@ -303,3 +303,53 @@ docker exec -u root gitlab chown -R gitlab:gitlab /var/opt/gitlab
 **Documentación creada:** Octubre 2025  
 **Última actualización:** Octubre 2025  
 **Versión:** 1.0
+
+
+# 1. Detener y eliminar el GitLab actual
+docker stop gitlab
+docker rm gitlab
+
+# 2. Restaurar datos desde tu backup .tar.gz al volume
+docker run --rm \
+  -v gitlab_data:/dest \
+  -v $(pwd):/backup \
+  alpine tar xzf /backup/gitlab_data_backup.tar.gz -C /dest
+
+# 3. Verificar que se restauró
+docker run --rm -v gitlab_data:/data alpine ls -la /data
+
+# 4. Levantar GitLab usando el volume restaurado
+docker run -d \
+  --hostname gitlab.local \
+  --network devops-net \
+  --publish 8929:80 \
+  --publish 2222:22 \
+  --name gitlab \
+  --restart always \
+  --volume $GITLAB_HOME/config:/etc/gitlab \
+  --volume $GITLAB_HOME/logs:/var/log/gitlab \
+  --volume $GITLAB_HOME/data:/var/opt/gitlab \
+  --shm-size 256m \
+  gitlab/gitlab-ce:latest
+
+
+
+
+adrianmrc94@DESKTOP-RBN3IBR:~/tmp-forks/spring-petclinic-angular$ docker exec -it jenkins bash
+jenkins@8e598cf0a202:/$ ssh-keygen -f /var/jenkins_home/.ssh/known_hosts -R gitlab
+# Host gitlab found: line 1
+# Host gitlab found: line 2
+# Host gitlab found: line 3
+/var/jenkins_home/.ssh/known_hosts updated.
+Original contents retained as /var/jenkins_home/.ssh/known_hosts.old
+jenkins@8e598cf0a202:/$ ssh-keyscan -H gitlab >> /var/jenkins_home/.ssh/known_hosts
+# gitlab:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
+# gitlab:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
+# gitlab:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
+# gitlab:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
+# gitlab:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
+jenkins@8e598cf0a202:/$ ssh-keyscan -p 2222 -H localhost >> /var/jenkins_home/.ssh/known_hosts
+jenkins@8e598cf0a202:/$ ssh -T git@gitlab
+Welcome to GitLab, @adrianmrc94!
+jenkins@8e598cf0a202:/$ exit
+exit
