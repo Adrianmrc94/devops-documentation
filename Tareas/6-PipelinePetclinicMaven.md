@@ -288,7 +288,7 @@ docker exec jenkins docker --version
 **Pipeline:**
 - Definition: **"Pipeline script from SCM"**
 - SCM: **"Git"**
-- Repository URL: `ssh://git@gitlab:22/adrianmrc94/petclinic-rest.git`
+- Repository URL: `ssh://git@gitlab:22/devops-user/petclinic-rest.git`
   
   ⚠️ **Importante**: Usar `gitlab:22`, NO `localhost:2222` (comunicación entre contenedores)
 

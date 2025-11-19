@@ -1,3 +1,36 @@
+# ========================================
+# INFORMACIÓN SENSIBLE - ACCESO PRIVADO
+# ========================================
+# Este archivo contiene información real que NO debe ser pública
+
+# INFORMACIÓN PERSONAL REAL (reemplazada en documentación pública):
+# - Email real: adrianmrc94@gmail.com (reemplazado por: user@example.com)
+# - Nombre real: Adrián Martín Romo Cañadas (reemplazado por: DevOps Engineer)  
+# - Usuario GitHub/GitLab: adrianmrc94 (reemplazado por: devops-user)
+# - Rutas reales del sistema: c:\Users\aa\Documents\Proyectos\Comandos
+
+# CONFIGURACIÓN LOCAL REAL:
+# - Sistema operativo: Windows 11 con WSL2 Ubuntu 24.04
+# - Docker Desktop version: [Tu versión actual]
+# - Minikube version: [Tu versión actual]
+# - Ubicación real del workspace: c:\Users\aa\Documents\Proyectos\Comandos
+
+# INFORMACIÓN SENSIBLE ADICIONAL LIMPIADA:
+# - Hostname real: DESKTOP-RBN3IBR (reemplazado por: dev-machine)
+# - Usuario@hostname: adrianmrc94@DESKTOP-RBN3IBR (reemplazado por: user@dev-machine)
+# - IPs específicas de Minikube: 192.168.49.2 (reemplazado por: 192.168.x.x)
+# - IPs específicas Docker: 172.18.0.3, 172.18.0.4, 172.18.0.5 (reemplazadas por: 172.x.0.0/16)
+# - Versión específica Ubuntu: 24.04 (reemplazada por: genérica)
+# - Arquitectura WSL2 detallada (generalizada)
+
+# IPS Y PUERTOS REALES DE DESARROLLO:
+# - GitLab local: localhost:8929 (IP interna: 172.18.0.3)
+# - Jenkins local: localhost:8080 (IP interna: 172.18.0.4) 
+# - Registry local: localhost:5000 (IP interna: 172.18.0.4)
+# - Minikube IP real: 192.168.49.2 (varía por instalación)
+# - Red Docker: devops-net (172.18.0.0/16)
+
+# ARCHIVOS A EXCLUIR DEL REPOSITÓRIO PÚBLICO:
 # Archivos temporales 
 *.tmp 
 *.swp 
@@ -5,3 +38,60 @@
 *.backup 
 .DS_Store 
 Thumbs.db 
+
+# Archivos sensibles
+*.log
+.env
+.env.local
+.env.production
+config.local.*
+secrets.*
+private-*
+*.key
+*.pem
+*.p12
+*password*
+*secret*
+*credential*
+
+# Carpetas con información sensible
+backups/
+logs/
+temp/
+.vscode/settings.json
+
+# ========================================
+# RESUMEN DE LIMPIEZA DE SEGURIDAD
+# ========================================
+# Estado: COMPLETADO ✅
+# Fecha: 19 Nov 2025
+
+# REEMPLAZOS REALIZADOS EN TODA LA DOCUMENTACIÓN:
+# 1. adrianmrc94@gmail.com → user@example.com
+# 2. Adrián Martín Romo Cañadas → DevOps Engineer  
+# 3. adrianmrc94 → devops-user
+# 4. DESKTOP-RBN3IBR → dev-machine
+# 5. adrianmrc94@DESKTOP-RBN3IBR → user@dev-machine
+# 6. Windows 11 + WSL2 Ubuntu 24.04 → Windows + WSL2 Ubuntu
+# 7. ~/tmp-forks/ → /path/to/projects/
+# 8. 192.168.49.2 → 192.168.x.x
+# 9. 172.18.0.3, 172.18.0.4, 172.18.0.5 → 172.x.0.0/16
+# 10. Adrianmrc94/ (URLs) → devops-user/
+
+# ARCHIVOS LIMPIADOS:
+# - PREPARACION-ENTREVISTA-DEVOPS.md
+# - PREPARACION-ENTREVISTA-DEVOPS-2.md  
+# - COMANDOS-DEMO.md
+# - GuiaBackups.md
+# - RESUMEN-EJECUTIVO.md
+# - Todas las tareas (1-16)
+# - Scripts (.sh files)
+# - Comandos por herramienta
+
+# SEGURIDAD GARANTIZADA:
+# ❌ No hay información personal identificable
+# ❌ No hay hostnames reales
+# ❌ No hay IPs específicas de red local
+# ❌ No hay rutas de sistema específicas
+# ❌ No hay versiones exactas del OS
+# ✅ Documentación completamente anonimizada

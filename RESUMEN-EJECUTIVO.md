@@ -23,7 +23,7 @@
 │                            │                 │                 │
 │  ┌─────────────────────────▼─────────────────▼──────────────┐ │
 │  │              Minikube (Kubernetes)                        │ │
-│  │         192.168.49.2 (cluster IP)                         │ │
+│  │         192.168.x.x (cluster IP)                           │ │
 │  │                                                            │ │
 │  │  Namespace: jenkins                                       │ │
 │  │  - Secret: registry-secret (docker-registry)              │ │
@@ -229,7 +229,7 @@ docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get nodes
    └─> Contienen: código fuente + Jenkinsfile
 
 2. 🔗 JENKINS HACE CHECKOUT
-   └─> git clone ssh://git@gitlab:22/adrianmrc94/petclinic-angular.git
+   └─> git clone ssh://git@gitlab:22/devops-user/petclinic-angular.git
    └─> Descarga código completo desde GitLab
 
 3. 📦 CARGA SHARED LIBRARY
@@ -250,9 +250,9 @@ docker exec jenkins kubectl --kubeconfig=/var/jenkins_home/kubeconfig get nodes
 
 | Repositorio | Ubicación | Propósito | Estado |
 |-------------|-----------|-----------|--------|
-| `jenkinspipelines` | adrianmrc94/jenkinspipelines | 📦 Shared Library | ✅ Activo |
-| `petclinic-angular` | adrianmrc94/petclinic-angular | 🎨 Frontend (Angular) | ✅ Pipeline SUCCESS |
-| `petclinic-rest` | adrianmrc94/petclinic-rest | ⚙️ Backend (Java/Maven) | ✅ Pipeline SUCCESS |
+| `jenkinspipelines` | devops-user/jenkinspipelines | 📦 Shared Library | ✅ Activo |
+| `petclinic-angular` | devops-user/petclinic-angular | 🎨 Frontend (Angular) | ✅ Pipeline SUCCESS |
+| `petclinic-rest` | devops-user/petclinic-rest | ⚙️ Backend (Java/Maven) | ✅ Pipeline SUCCESS |
 
 ---
 

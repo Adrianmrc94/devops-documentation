@@ -1,4 +1,4 @@
-# 🚀 Preparación para Entrevista DevOps - Adrián Martín Romo Cañadas
+# 🚀 Preparación para Entrevista DevOps - DevOps Engineer
 
 **Fecha:** Noviembre 2025  
 **Nivel:** Junior DevOps Engineer  
@@ -529,7 +529,7 @@ Pod (aplicación)
 
 ### 5. Minikube Network Isolation
 
-**Problema:** WSL2 no podía alcanzar la red interna de Minikube (192.168.49.2)  
+**Problema:** WSL2 no podía alcanzar la red interna de Minikube (192.168.x.x)  
 **Causa:** Minikube corre en una red aislada dentro de Docker  
 **Solución:**
 - Conectar Minikube container a `devops-net`
@@ -801,7 +801,7 @@ git merge --allow-unrelated-histories  # Merge historiales independientes
 ```bash
 # MÉTODO 1: Demo automático con SCM Polling (CONFIGURADO)
 # 1. Hacer cambio en GitLab
-cd ~/tmp-forks/spring-petclinic-angular
+cd /path/to/projects/spring-petclinic-angular
 echo "// Demo automático $(date)" >> README.md
 git add README.md && git commit -m "demo: automatic trigger" && git push origin main
 
@@ -852,7 +852,7 @@ echo "135+ builds ejecutados, muchos por polling automático"
 *"Uso Rolling Updates de Kubernetes configurando maxUnavailable (máximo 1 pod caído) y maxSurge (máximo 1 pod extra durante update). Implemento readinessProbe para que Kubernetes solo enrute tráfico a pods completamente listos, y livenessProbe para reiniciar pods que fallen. Además, Helm me permite hacer rollbacks instantáneos si detecto problemas después del despliegue."*
 
 ### 14. Explica un problema de networking que hayas resuelto
-*"En WSL2 con Minikube, el LoadBalancer no funciona nativamente y la red de Minikube (192.168.49.2) no era alcanzable desde el host. Implementé una solución multicapa: 1) Ingress Controller (nginx) en Minikube para HTTP routing, 2) `kubectl port-forward` para exponer el Ingress al host, 3) Nginx local en WSL como proxy reverso escuchando en puerto 80, 4) Configuración de `/etc/hosts` para dominios personalizados. Esto me permitió acceder con URLs amigables como http://mi-app.local sin puerto."*
+*"En WSL2 con Minikube, el LoadBalancer no funciona nativamente y la red de Minikube no era alcanzable desde el host. Implementé una solución multicapa: 1) Ingress Controller (nginx) en Minikube para HTTP routing, 2) `kubectl port-forward` para exponer el Ingress al host, 3) Nginx local en WSL como proxy reverso escuchando en puerto 80, 4) Configuración de `/etc/hosts` para dominios personalizados. Esto me permitió acceder con URLs amigables como http://mi-app.local sin puerto."*
 
 ### 15. ¿Qué mejorarías en tu setup actual?
 *"Actualmente implementaría: Prometheus y Grafana para monitoreo de métricas en tiempo real, ELK Stack para logs centralizados y debugging avanzado, Trivy para escaneo automático de vulnerabilidades en imágenes Docker, ArgoCD para GitOps (deploy sincronizado con Git), tests de integración end-to-end con Selenium, y Terraform para gestionar infraestructura como código. Estas mejoras llevarían el proyecto de entorno de desarrollo a nivel producción."*
@@ -887,7 +887,7 @@ echo "GitLab: Settings → Webhooks → http://jenkins:8080/generic-webhook-trig
 echo "Jenkins: Job Configure → Build Triggers → Generic Webhook Trigger"
 
 # 3. Ver que mi código está actualizado (GitLab funciona)
-cd ~/tmp-forks/spring-petclinic-angular
+cd /path/to/projects/spring-petclinic-angular
 git log --oneline -3
 
 # 4. Mostrar builds exitosos (Jenkins funciona)
@@ -1056,7 +1056,7 @@ refactor: simplify Dockerfile
 - [Spring PetClinic REST](https://github.com/spring-petclinic/spring-petclinic-rest)
 
 ### Herramientas
-- **OS:** Windows 11 + WSL2 (Ubuntu 24.04)
+- **OS:** Windows + WSL2 (Ubuntu)
 - **Container Runtime:** Docker Desktop 28.4.0
 - **Editor:** Visual Studio Code
 - **Shell:** Bash

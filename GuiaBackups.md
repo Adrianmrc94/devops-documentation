@@ -335,7 +335,7 @@ docker run -d \
 
 
 
-adrianmrc94@DESKTOP-RBN3IBR:~/tmp-forks/spring-petclinic-angular$ docker exec -it jenkins bash
+user@dev-machine:/path/to/projects/spring-petclinic-angular$ docker exec -it jenkins bash
 jenkins@8e598cf0a202:/$ ssh-keygen -f /var/jenkins_home/.ssh/known_hosts -R gitlab
 # Host gitlab found: line 1
 # Host gitlab found: line 2
@@ -350,6 +350,6 @@ jenkins@8e598cf0a202:/$ ssh-keyscan -H gitlab >> /var/jenkins_home/.ssh/known_ho
 # gitlab:22 SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.14
 jenkins@8e598cf0a202:/$ ssh-keyscan -p 2222 -H localhost >> /var/jenkins_home/.ssh/known_hosts
 jenkins@8e598cf0a202:/$ ssh -T git@gitlab
-Welcome to GitLab, @adrianmrc94!
+Welcome to GitLab, @devops-user!
 jenkins@8e598cf0a202:/$ exit
 exit

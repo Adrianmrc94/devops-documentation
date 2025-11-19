@@ -419,7 +419,7 @@ docker exec jenkins cat /var/jenkins_home/jobs/petclinic-maven-ci/config.xml | g
 # 4. Verificar que puede clonar desde GitLab
 docker exec jenkins bash -c "cd /tmp && \
   rm -rf test-clone && \
-  git clone ssh://git@gitlab:22/adrianmrc94/petclinic-angular.git test-clone && \
+  git clone ssh://git@gitlab:22/devops-user/petclinic-angular.git test-clone && \
   ls test-clone/ && \
   rm -rf test-clone"
 ```
@@ -969,7 +969,7 @@ spec:
 
 - `spring-petclinic-angular` (Frontend)
 - `spring-petclinic-rest` (Backend Maven)
-- Clones locales en `~/tmp-forks/`
+- Clones locales en `/path/to/projects/`
 
 ### 📊 Métricas del Proyecto
 
@@ -985,7 +985,7 @@ spec:
 ### 📂 Estructura del Código
 
 ```
-~/tmp-forks/
+/path/to/projects/
 ├── spring-petclinic-angular/
 │   ├── Jenkinsfile              # Pipeline 11 stages
 │   ├── Dockerfile               # Multi-stage: node:18-alpine → nginx:alpine
@@ -1012,7 +1012,7 @@ spec:
 
 **Características**:
 - ✅ Manejo de conflictos de IP con auto-retry
-- ✅ Subnets alternativas (192.168.49.0/24 o 192.168.50.0/24)
+- ✅ Subnets alternativas (192.168.x.0/24)
 - ✅ Configuración completa en 2-3 minutos
 - ✅ Validación de conectividad Jenkins → Kubernetes
 - ✅ Despliegue de pod de prueba automático
@@ -1092,13 +1092,13 @@ Ejecuta estos comandos **AHORA** para sincronizar todo:
 
 ```bash
 # 1. Cambiar YAMLs de namespace jenkins → default
-cd ~/tmp-forks/spring-petclinic-angular
+cd /path/to/projects/spring-petclinic-angular
 sed -i 's/namespace: jenkins/namespace: default/g' k8s-deployment-angular.yaml
 git add k8s-deployment-angular.yaml
 git commit -m "fix: change namespace from jenkins to default"
 git push origin main
 
-cd ~/tmp-forks/spring-petclinic-rest
+cd /path/to/projects/spring-petclinic-rest
 sed -i 's/namespace: jenkins/namespace: default/g' k8s-deployment-maven.yaml
 git add k8s-deployment-maven.yaml
 git commit -m "fix: change namespace from jenkins to default"

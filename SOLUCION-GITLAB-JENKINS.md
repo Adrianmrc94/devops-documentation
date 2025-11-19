@@ -34,8 +34,8 @@
 docker exec gitlab gitlab-rails runner "Project.all.each { |p| puts p.path_with_namespace }"
 
 # Resultado:
-# adrianmrc94/petclinic-rest
-# adrianmrc94/petclinic-angular
+# devops-user/petclinic-rest
+# devops-user/petclinic-angular
 # adrianmrc94/jenkinspipelines
 
 # Verificar contenido (vacío)

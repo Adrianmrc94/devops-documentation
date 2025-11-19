@@ -60,7 +60,7 @@ spring-petclinic-rest/
 
 ### **Paso 1: Modificar Jenkinsfile de petclinic-angular**
 
-**Ubicación:** `~/tmp-forks/spring-petclinic-angular/Jenkinsfile`
+**Ubicación:** `/path/to/projects/spring-petclinic-angular/Jenkinsfile`
 
 **⚠️ IMPORTANTE:** Usamos `localhost:5000` en vez de `registry:5000` porque los contenedores de build usan Docker-in-Docker y no pueden resolver el hostname `registry`.
 
@@ -106,7 +106,7 @@ HOST:5000 → Registry Container
 ```
 
 **Alternativas que también funcionarían:**
-- Usar la IP del HOST: `192.168.1.100:5000`
+- Usar la IP del HOST: `192.168.x.x:5000`
 - Configurar `/etc/hosts` en el HOST: `127.0.0.1 registry`
 - Usar `host.docker.internal:5000` (solo Docker Desktop Mac/Windows)
 
@@ -242,7 +242,7 @@ pipeline {
 
 ### **Paso 2: Modificar Jenkinsfile de petclinic-maven**
 
-**Ubicación:** `~/tmp-forks/spring-petclinic-rest/Jenkinsfile`
+**Ubicación:** `/path/to/projects/spring-petclinic-rest/Jenkinsfile`
 
 **⚠️ IMPORTANTE:** Usamos el workspace de Jenkins (`/var/jenkins_home/workspace/${JOB_NAME}`) para evitar problemas de permisos con Maven.
 
@@ -435,7 +435,7 @@ docker run -d \
 ### **Para petclinic-angular:**
 
 ```bash
-cd ~/tmp-forks/spring-petclinic-angular
+cd /path/to/projects/spring-petclinic-angular
 
 # Crear backup del Jenkinsfile actual
 cp Jenkinsfile Jenkinsfile.backup
@@ -464,7 +464,7 @@ git push origin main
 ### **Para petclinic-maven:**
 
 ```bash
-cd ~/tmp-forks/spring-petclinic-rest
+cd /path/to/projects/spring-petclinic-rest
 
 # Crear backup del Jenkinsfile actual
 cp Jenkinsfile Jenkinsfile.backup

@@ -138,7 +138,7 @@ cat > config.xml << 'EOF'
       <configVersion>2</configVersion>
       <userRemoteConfigs>
         <hudson.plugins.git.UserRemoteConfig>
-          <url>ssh://git@gitlab:22/adrianmrc94/petclinic-angular.git</url>
+          <url>ssh://git@gitlab:22/devops-user/petclinic-angular.git</url>
           <credentialsId>gitlab-ssh-key</credentialsId>
         </hudson.plugins.git.UserRemoteConfig>
       </userRemoteConfigs>
@@ -203,7 +203,7 @@ echo -e "${GREEN}🎉 CONFIGURACIÓN COMPLETADA${NC}"
 echo ""
 echo -e "${YELLOW}📋 PARA PROBAR:${NC}"
 echo "1. Hacer un cambio en el código:"
-echo "   cd ~/tmp-forks/spring-petclinic-angular"
+echo "   cd /path/to/projects/spring-petclinic-angular"
 echo "   echo '// Webhook test' >> README.md"
 echo "   git add README.md && git commit -m 'test: webhook trigger'"
 echo "   git push origin main"
@@ -214,4 +214,4 @@ echo "   - En 10-15 segundos después del push"
 echo ""
 echo -e "${BLUE}🔗 URLs importantes:${NC}"
 echo "Jenkins: http://localhost:8080/job/petclinic-angular-ci/"
-echo "GitLab: http://localhost:8929/adrianmrc94/petclinic-angular/-/hooks"
+echo "GitLab: http://localhost:8929/devops-user/petclinic-angular/-/hooks"

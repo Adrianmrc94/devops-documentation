@@ -28,7 +28,7 @@
 
 | Acción | Comando |
 |--------|---------|
-| Inventario inline | `ansible -i "192.168.56.11," all -m ping` |
+| Inventario inline | `ansible -i "192.168.x.x," all -m ping` |
 | Inventario archivo | `ansible -i inventario.ini all -m ping` |
 | Usar usuario distinto | `ansible -i inventario.ini all -m ping -u deploy` |
 | Clave privada explícita | `ansible -i inventario.ini all -m ping --key-file=~/.ssh/id_rsa` |

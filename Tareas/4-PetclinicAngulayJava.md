@@ -47,7 +47,7 @@ git config --global --list | grep user
 
 ```bash
 # Crear directorio temporal para forks
-mkdir ~/tmp-forks && cd ~/tmp-forks
+mkdir /path/to/projects && cd /path/to/projects
 
 # Clonar proyectos públicos de GitHub
 git clone https://github.com/spring-petclinic/spring-petclinic-angular.git
@@ -104,7 +104,7 @@ git branch -a
 
 ```bash
 # Generar nueva clave SSH
-ssh-keygen -t ed25519 -C "adrianmrc94@gmail.com" -f ~/.ssh/id_ed25519
+ssh-keygen -t ed25519 -C "user@example.com" -f ~/.ssh/id_ed25519
 
 # Mostrar clave pública
 cat ~/.ssh/id_ed25519.pub
@@ -141,7 +141,7 @@ cd ~/tmp-forks/spring-petclinic-angular
 git remote rename origin upstream
 
 # 2. Agregar remote de GitLab local
-git remote add origin ssh://git@localhost:2222/Adrianmrc94/petclinic-angular.git
+git remote add origin ssh://git@localhost:2222/devops-user/petclinic-angular.git
 
 # 3. CRÍTICO: Renombrar branch master → main
 git branch -m master main
@@ -175,7 +175,7 @@ git branch -a
 
 **Resultado esperado:**
 ```
-To ssh://localhost:2222/Adrianmrc94/petclinic-angular.git
+To ssh://localhost:2222/devops-user/petclinic-angular.git
    c08912b..555dd0d  main -> main
 Branch 'main' set up to track remote branch 'main' from 'origin'.
 ```
@@ -188,7 +188,7 @@ Branch 'main' set up to track remote branch 'main' from 'origin'.
 cd ~/tmp-forks/spring-petclinic-rest
 
 # 1. Agregar remote de GitLab local (NO renombrar upstream si quieres mantener acceso a GitHub)
-git remote add origin ssh://git@localhost:2222/Adrianmrc94/petclinic-rest.git
+git remote add origin ssh://git@localhost:2222/devops-user/petclinic-rest.git
 
 # 2. CRÍTICO: Renombrar branch master → main
 git branch -m master main
@@ -221,7 +221,7 @@ git branch -a
 
 **Resultado esperado:**
 ```
-To ssh://localhost:2222/Adrianmrc94/petclinic-rest.git
+To ssh://localhost:2222/devops-user/petclinic-rest.git
    1f83fa9..1777892  main -> main
 Branch 'main' set up to track remote branch 'main' from 'origin'.
 ```

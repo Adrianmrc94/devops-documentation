@@ -18,7 +18,7 @@ Perfecto, he revisado todo el material. Voy a crear un documento completo y prof
 Te voy a crear `PREPARACION-ENTREVISTA-DEVOPS.md` en la raíz del proyecto:
 
 ```markdown
-# 🚀 Preparación Entrevista DevOps - Adrián Martín Romo Cañadas
+# 🚀 Preparación Entrevista DevOps - DevOps Engineer
 
 ## 📌 Índice Rápido
 1. [Definición de DevOps](#definición-de-devops)

@@ -38,7 +38,7 @@ echo -e "${YELLOW}⏳ PASO 2: Realizando cambio en GitLab...${NC}"
 echo "----------------------------------------"
 
 # Ir al repositorio
-cd ~/tmp-forks/spring-petclinic-angular
+cd /path/to/projects/spring-petclinic-angular
 
 # Hacer un cambio mínimo
 echo "<!-- Demo change $(date '+%Y-%m-%d %H:%M:%S') -->" >> README.md
@@ -75,7 +75,7 @@ if [ "$NEW_BUILDS" -gt "$CURRENT_BUILDS" ]; then
     echo "--------------------------------"
     echo "🔗 Para ver en tiempo real:"
     echo "Jenkins Dashboard: http://localhost:8080"
-    echo "GitLab Commit: http://localhost:8929/adrianmrc94/petclinic-angular/-/commits/main"
+    echo "GitLab Commit: http://localhost:8929/devops-user/petclinic-angular/-/commits/main"
     
 else
     echo -e "${YELLOW}⏳ Webhook puede estar procesándose...${NC}"

@@ -333,7 +333,7 @@ docker exec jenkins sh -c "cd /tmp && git clone ssh://git@gitlab:22/Adrianmrc94/
 **Pipeline:**
 - Definition: **"Pipeline script from SCM"**
 - SCM: **"Git"**
-- Repository URL: `ssh://git@gitlab:22/adrianmrc94/petclinic-angular.git`
+- Repository URL: `ssh://git@gitlab:22/devops-user/petclinic-angular.git`
   
   ⚠️ **Importante**: Usar `gitlab:22`, NO `localhost:2222` (comunicación entre contenedores)
 
