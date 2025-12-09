@@ -406,46 +406,205 @@ sudo netstat -tulpn | grep 8081
 
 ## 🚀 Automatización
 
-### Script para iniciar todo
+### 📋 Scripts Necesarios
 
-Crea un script `start-angular.sh`:
+#### 1. Script de Inicialización Diaria (Ya existe)
+
+**Ubicación:** `~/scripts/setup-registry-k8s-fixed-v4.sh`  
+**Cuándo ejecutar:** Cada vez que inicias Docker Desktop/WSL  
+**Tiempo:** ~2-3 minutos  
+
+```bash
+cd ~/scripts
+./setup-registry-k8s-fixed-v4.sh
+```
+
+---
+
+#### 2. Script para Angular con Ingress (NUEVO)
+
+**Crear archivo:** `~/scripts/start-angular-ingress.sh`
 
 ```bash
 #!/bin/bash
 
-echo "🚀 Iniciando servicios para Angular..."
+# ============================================
+# Script para iniciar Angular con Ingress
+# Ejecutar DESPUÉS de setup-registry-k8s
+# ============================================
 
-# Verificar que Minikube está corriendo
+set -e
+
+# Colores
+GREEN='\033[0;32m'
+BLUE='\033[0;34m'
+YELLOW='\033[1;33m'
+RED='\033[0;31m'
+NC='\033[0m'
+
+print_status() { echo -e "${BLUE}[INFO]${NC} $1"; }
+print_success() { echo -e "${GREEN}[✓]${NC} $1"; }
+print_warning() { echo -e "${YELLOW}[!]${NC} $1"; }
+print_error() { echo -e "${RED}[✗]${NC} $1"; }
+
+echo ""
+echo "🚀 Iniciando Aplicación Angular con Ingress"
+echo "=============================================="
+echo ""
+
+# 1. Verificar Minikube
+print_status "Verificando Minikube..."
 if ! minikube status | grep -q "Running"; then
-    echo "❌ Minikube no está corriendo"
+    print_error "Minikube no está corriendo"
+    echo "   Ejecuta primero: cd ~/scripts && ./setup-registry-k8s-fixed-v4.sh"
+    exit 1
+fi
+print_success "Minikube está corriendo"
+
+# 2. Verificar Ingress Controller
+print_status "Verificando Ingress Controller..."
+if ! kubectl get pods -n ingress-nginx | grep -q "ingress-nginx-controller.*Running"; then
+    print_warning "Habilitando addon de ingress..."
+    minikube addons enable ingress
+    print_status "Esperando 60 segundos para que inicie..."
+    sleep 60
+fi
+print_success "Ingress Controller está corriendo"
+
+# 3. Iniciar nginx local
+print_status "Verificando nginx local..."
+if ! systemctl is-active --quiet nginx; then
+    print_status "Iniciando nginx..."
+    sudo systemctl start nginx
+fi
+print_success "Nginx está activo"
+
+# 4. Verificar configuración de nginx
+if [ ! -f /etc/nginx/sites-enabled/angular-proxy ]; then
+    print_error "Configuración de nginx no encontrada"
+    echo "   Crea el archivo: /etc/nginx/sites-available/angular-proxy"
     exit 1
 fi
 
-# Verificar nginx
-sudo systemctl start nginx
-echo "✅ Nginx iniciado"
+# 5. Matar port-forward previo si existe
+print_status "Limpiando port-forward anteriores..."
+pkill -f "kubectl port-forward.*8081:80" 2>/dev/null || true
+sleep 2
 
-# Iniciar port-forward en background
-kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8081:80 &
+# 6. Iniciar port-forward en background
+print_status "Iniciando port-forward..."
+kubectl port-forward -n ingress-nginx service/ingress-nginx-controller 8081:80 > /tmp/port-forward.log 2>&1 &
 PF_PID=$!
-echo "✅ Port-forward iniciado (PID: $PF_PID)"
+echo $PF_PID > /tmp/port-forward.pid
+sleep 3
+
+# 7. Verificar que el port-forward está corriendo
+if ! ps -p $PF_PID > /dev/null; then
+    print_error "Port-forward falló al iniciar"
+    cat /tmp/port-forward.log
+    exit 1
+fi
+print_success "Port-forward iniciado (PID: $PF_PID)"
+
+# 8. Verificar puerto 8081
+if ! netstat -tuln | grep -q ":8081"; then
+    print_error "Puerto 8081 no está escuchando"
+    exit 1
+fi
+print_success "Puerto 8081 escuchando"
 
 echo ""
-echo "🎉 Todo listo! Accede a:"
-echo "   http://mi-dominio.local"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo "✅ Sistema listo para acceder a la aplicación"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 echo ""
-echo "Para detener:"
+echo "📍 URL de acceso:"
+echo "   http://prueba.local.angular"
+echo ""
+echo "🔍 Verificar ingress:"
+echo "   kubectl get ingress"
+echo ""
+echo "📊 Ver logs del port-forward:"
+echo "   tail -f /tmp/port-forward.log"
+echo ""
+echo "🛑 Para detener el port-forward:"
 echo "   kill $PF_PID"
+echo "   # O ejecuta: pkill -f 'kubectl port-forward.*8081:80'"
+echo ""
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
 ```
 
-Dar permisos:
+**Crear y dar permisos:**
 ```bash
-chmod +x start-angular.sh
+nano ~/scripts/start-angular-ingress.sh
+# Pegar el contenido anterior
+chmod +x ~/scripts/start-angular-ingress.sh
 ```
 
-Ejecutar:
+**Ejecutar:**
 ```bash
-./start-angular.sh
+~/scripts/start-angular-ingress.sh
+```
+
+---
+
+#### 3. Script para Detener (NUEVO)
+
+**Crear archivo:** `~/scripts/stop-angular-ingress.sh`
+
+```bash
+#!/bin/bash
+
+echo "🛑 Deteniendo port-forward..."
+
+if [ -f /tmp/port-forward.pid ]; then
+    PID=$(cat /tmp/port-forward.pid)
+    if ps -p $PID > /dev/null; then
+        kill $PID
+        echo "✓ Port-forward detenido (PID: $PID)"
+    else
+        echo "⚠ Proceso ya no existe"
+    fi
+    rm /tmp/port-forward.pid
+else
+    echo "⚠ Archivo PID no encontrado, intentando detener todos..."
+    pkill -f "kubectl port-forward.*8081:80"
+fi
+
+echo "✓ Listo"
+```
+
+**Dar permisos:**
+```bash
+chmod +x ~/scripts/stop-angular-ingress.sh
+```
+
+---
+
+### 📝 Orden de Ejecución
+
+**Cada día al iniciar Docker:**
+
+```bash
+# 1. Levantar entorno completo (Minikube, redes, secrets)
+cd ~/scripts
+./setup-registry-k8s-fixed-v4.sh
+
+# 2. Desplegar aplicación con Helm (si no está desplegada)
+cd ~/tmp-forks/spring-petclinic-angular
+helm upgrade --install spring-petclinic-angular ./chart -f helm/values.yaml
+
+# 3. Iniciar servicios para acceso con Ingress
+~/scripts/start-angular-ingress.sh
+
+# 4. Abrir navegador en Windows
+# http://prueba.local.angular
+```
+
+**Para detener al final del día:**
+
+```bash
+~/scripts/stop-angular-ingress.sh
 ```
 
 ---
