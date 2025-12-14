@@ -177,31 +177,6 @@ Deberías ver un JSON con los owners. Ejemplo:
 - `http://prueba.local.maven/petclinic/api/pettypes`
 - `http://prueba.local.maven/petclinic/actuator/health`
 
-# Deberías ver:
-# Forwarding from 127.0.0.1:8082 -> 80
-# Forwarding from [::1]:8082 -> 80
-```
-
----
-
-### 5. ¡Probar!
-
-Abre Chrome en Windows y ve a:
-```
-http://prueba.local.maven
-```
-
-**Deberías ver la página de inicio de la API o un JSON de bienvenida.** 🎉
-
-#### Endpoints de prueba:
-
-```
-http://prueba.local.maven/petclinic/
-http://prueba.local.maven/petclinic/api/owners
-http://prueba.local.maven/petclinic/api/vets
-http://prueba.local.maven/petclinic/swagger-ui.html
-```
-
 ---
 
 ## 🚀 Automatización con Scripts
